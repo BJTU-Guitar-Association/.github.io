@@ -1,2 +1,2 @@
 # .github.io
-Build up
+Build up for BJTU-Guitar Association.
