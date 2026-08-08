@@ -491,6 +491,66 @@
       box-shadow: 0 12px 26px rgba(61, 83, 198, .45);
     }
 
+    /* ---------- 页面切换系统 ---------- */
+    .page-container {
+      position: relative;
+      min-height: 120px;
+    }
+    .page-container > .card.block {
+      display: none;
+      animation: pageFadeIn .38s ease;
+    }
+    .page-container > .card.block.active {
+      display: block;
+    }
+    @keyframes pageFadeIn {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .page-back-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 14px;
+    }
+    .page-back-btn {
+      cursor: pointer;
+      border: 1px solid #c9d4f5;
+      background: #fff;
+      color: #3d53c6;
+      border-radius: 999px;
+      padding: 6px 18px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      transition: background .15s, color .15s, border-color .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .page-back-btn:hover {
+      background: #3d53c6;
+      color: #fff;
+      border-color: #3d53c6;
+    }
+    .page-back-label {
+      font-size: 0.9rem;
+      color: #9297ab;
+      font-weight: 600;
+    }
+    .win-tile.active-tile {
+      border-color: #3d53c6 !important;
+      box-shadow: 0 0 0 2px rgba(61, 83, 198, .18), 0 6px 16px rgba(61, 83, 198, .12) !important;
+      background: #eef4ff !important;
+    }
+    .win-tile.active-tile .win-tile-label {
+      color: #3d53c6;
+    }
+    .win-tile.active-tile .win-tile-icon {
+      transform: scale(1.15);
+      transition: transform .2s ease;
+    }
+
     /* ---------- 折叠章节结构 ---------- */
     details {
       border: 1px solid #e0e6f5;
@@ -552,6 +612,35 @@
     }
     .sub4-body {
       padding-left: 52px;
+    }
+
+    /* ---------- 扁平化板块（无折叠，直接展示） ---------- */
+    .chapter-block {
+      border: 1px solid #e0e6f5;
+      border-radius: 14px;
+      background: #fff;
+      margin-bottom: 12px;
+    }
+    .chapter-block > h3 {
+      background: #eef4ff;
+      font-size: 1.08rem;
+      border-radius: 14px 14px 0 0;
+      padding: 14px 16px;
+      color: #2d3f6f;
+      margin: 0;
+      font-weight: 700;
+      scroll-margin-top: 20px;
+    }
+    .section-block > h4 {
+      padding-left: 28px;
+      color: #3d53c6;
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 12px 0 8px;
+      scroll-margin-top: 20px;
+    }
+    .section-block > .section-body {
+      padding: 0 16px 16px 28px;
     }
 
     /* ---------- 正文元素 ---------- */
@@ -770,12 +859,12 @@
       <div class="card-content">
         <h2>版块导航</h2>
         <div class="toc">
-          <p class="toc-hint">点击文件夹磁贴，下级磁贴会在下方逐个弹出；再次点击或点击同层其他磁贴可收起。点击最末级磁贴可直接跳转到正文对应章节。</p>
+          <p class="toc-hint">点击下方磁贴即可跳转到对应板块的独占页面，点击页面内「← 返回导航」可回到此处。</p>
           <div id="menuRoot"></div>
         </div>
         <div class="toc-actions">
-          <button type="button" onclick="toggleAll(true)">展开全部</button>
-          <button type="button" onclick="toggleAll(false)">折叠全部</button>
+          <button type="button" id="btnShowAll" style="display:none;">展开全部</button>
+          <button type="button" id="btnCollapseAll" style="display:none;">折叠全部</button>
         </div>
         <div class="index-search" style="margin-top:16px;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -789,6 +878,9 @@
          板块结构：乐队档案 / 画廊 / 活动 / 审批 / 日常 / 招新 / 遗言区 / 参考文献
          每个板块都是独立的 <section class="card block" id="...">，版块索引会自动收录。
          ================================================================ -->
+
+    <!-- 页面容器：以下板块通过磁贴点击独占切换显示 -->
+    <div class="page-container" id="pageContainer">
 
     <!-- 1. 乐队档案 -->
     <section class="card block" id="bands" data-icon="🎤" data-desc="历届乐队介绍 / 名人堂">
@@ -1685,28 +1777,28 @@
       <section class="document-outline">
 
       <!-- 其它注意事项 -->
-      <details class="chapter" id="sec-5">
-        <summary>其它注意事项</summary>
+      <div class="chapter-block" id="sec-5">
+        <h3>其它注意事项</h3>
         <div class="chapter-body">
-          <details class="section" id="sec-51">
-            <summary>天气</summary>
+          <div class="section-block" id="sec-51">
+            <h4>天气</h4>
             <div class="section-body">
               <p>室外演出活动需要把握天气，天气不好就发通知推迟，首先要保证大家身体健康、设备不损坏，不要硬演。</p>
               <p>祝吉协每次演出都是好天气！</p>
             </div>
-          </details>
-          <details class="section" id="sec-52">
-            <summary>商业</summary>
+          </div>
+          <div class="section-block" id="sec-52">
+            <h4>商业</h4>
             <div class="section-body">
               <p>目前北交社团禁止接任何涉及商业的活动，我们也不需要去朋友圈转发小广告。</p>
             </div>
-          </details>
+          </div>
         </div>
-      </details>
+      </div>
 
       <!-- 6. 最后 -->
-      <details class="chapter" id="sec-6">
-        <summary>最后</summary>
+      <div class="chapter-block" id="sec-6">
+        <h3>最后</h3>
         <div class="chapter-body">
           <p>其实27年左右学生逐渐搬往雄安校区后，吉协能以何种形式存在都不得而知，这些事情也和笔者关系不大了。但是整个运营流程的基本思路和中心思想应该不会有太大改变。如果之后的负责人能在此基础上不断更新和完善，笔者认为，这些整理总结工作终究不会是白费力气。对于其它兄弟姐妹社团，在日常管理和举办活动的共通之处也能有一些帮助。</p>
           <p><strong>感谢</strong></p>
@@ -1724,7 +1816,7 @@
           </ul>
           <p>今当远离，不知所言。</p>
         </div>
-      </details>
+      </div>
 
       </section>
     </section>
@@ -1854,6 +1946,9 @@
       </section>
     </section>
 
+    </div>
+    <!-- 页面容器结束 -->
+
     <!-- 标签 -->
     <section class="tags">
       <div class="tags-label">标签</div>
@@ -1882,266 +1977,202 @@
   <button class="back-top" id="backTop" type="button" aria-label="回到顶部" title="回到顶部">↑</button>
   <script>
     // ================================================================
-    // 目录数据（九宫格弹出式导航）
+    // 页面数据：顶层板块定义（用于磁贴导航生成）
     // ================================================================
-    var MENU = [
-      { title: '乐队档案', icon: '🎤', desc: '历届乐队介绍 / 名人堂', target: '#bands' },
-      { title: '画廊', icon: '🖼️', desc: '活动照片集锦', target: '#gallery' },
-      { title: '活动', icon: '🎸', desc: '场地 / 宣传 / 内容 / 准备与现场 / 善后', target: '#events', children: [
-        { title: '场地', target: '#sec-11', children: [
-          { title: '小树林/斗兽场', target: '#sec-111' },
-          { title: '小剧场', target: '#sec-112' },
-          { title: '天佑会堂', target: '#sec-113' }
-        ]},
-        { title: '宣传', target: '#sec-12', children: [
-          { title: '海报', target: '#sec-121' },
-          { title: '公众号推文', target: '#sec-122', children: [
-            { title: '招新推文', target: '#sec-1221' },
-            { title: '活动推文', target: '#sec-1222' },
-            { title: '其它推文', target: '#sec-1223' }
-          ]}
-        ]},
-        { title: '内容', target: '#sec-13', children: [
-          { title: '乐队', target: '#sec-131' },
-          { title: '曲目', target: '#sec-132' }
-        ]},
-        { title: '准备与现场', target: '#sec-14', children: [
-          { title: '设备', target: '#sec-141', children: [
-            { title: '搬运', target: '#sec-1411' },
-            { title: '接电', target: '#sec-1412' }
-          ]},
-          { title: '灯光', target: '#sec-142', children: [
-            { title: '室外', target: '#sec-1421' },
-            { title: '室内', target: '#sec-1422' }
-          ]},
-          { title: '彩排', target: '#sec-143' },
-          { title: '拍摄', target: '#sec-144', children: [
-            { title: '拍照', target: '#sec-1441' },
-            { title: '录像', target: '#sec-1442' }
-          ]}
-        ]},
-        { title: '善后', target: '#sec-15', children: [
-          { title: '设备', target: '#sec-151' },
-          { title: '资料', target: '#sec-152' },
-          { title: '反思总结', target: '#sec-153' }
-        ]}
-      ]},
-      { title: '审批', icon: '📋', desc: '审批盖章地点 / 审批顺序', target: '#approval', children: [
-        { title: '审批盖章地点', target: '#sec-21', children: [
-          { title: '社团指导教师所在的办公地点', target: '#sec-211' },
-          { title: '天佑301', target: '#sec-212' },
-          { title: '学活803/805', target: '#sec-213' },
-          { title: '机械楼会议中心', target: '#sec-214' },
-          { title: '保卫处', target: '#sec-215' }
-        ]},
-        { title: '审批顺序', target: '#sec-22', children: [
-          { title: '活动审批', target: '#sec-221', children: [
-            { title: '活动申请书', target: '#sec-2211' },
-            { title: '活动审批表', target: '#sec-2212' },
-            { title: '活动策划书', target: '#sec-2213' },
-            { title: '安全预案', target: '#sec-2214' }
-          ]},
-          { title: '房间锁定', target: '#sec-222' },
-          { title: '宣传资料审查', target: '#sec-223', children: [
-            { title: '推送', target: '#sec-2231' },
-            { title: '歌单', target: '#sec-2232' },
-            { title: '海报', target: '#sec-2233' }
-          ]}
-        ]}
-      ]},
-      { title: '日常', icon: '🏠', desc: '音箱使用 / 预约表 / 吉他课 / 换届 / 外交', target: '#daily', children: [
-        { title: '音箱使用说明', target: '#sec-41', children: [
-          { title: '简述', target: '#sec-411', children: [
-            { title: '输入', target: '#sec-4111' },
-            { title: '切换音色', target: '#sec-4112' },
-            { title: '单次使用时长', target: '#sec-4113' },
-            { title: '电气安全', target: '#sec-4114' },
-            { title: '音色链故障的排除与归因', target: '#sec-4115' }
-          ]},
-          { title: '禁忌事项', target: '#sec-412' }
-        ]},
-        { title: '预约表', target: '#sec-42' },
-        { title: '吉他课', target: '#sec-43' },
-        { title: '换届/审核', target: '#sec-44', children: [
-          { title: '换届注册', target: '#sec-441' },
-          { title: '年审', target: '#sec-442' },
-          { title: '中期评估', target: '#sec-443' }
-        ]},
-        { title: '外交', target: '#sec-45' }
-      ]},
-      { title: '招新', icon: '🌱', desc: '百团前 / 百团时 / 百团后', target: '#recruitment', children: [
-        { title: '百团前', target: '#sec-31', children: [
-          { title: '物料', target: '#sec-311', children: [
-            { title: '宣传', target: '#sec-3111' },
-            { title: '礼品', target: '#sec-3112' },
-            { title: '设备', target: '#sec-3113' },
-            { title: '其它', target: '#sec-3114' }
-          ]},
-          { title: '节目', target: '#sec-312', children: [
-            { title: '主舞台', target: '#sec-3121' },
-            { title: '摊位', target: '#sec-3122' }
-          ]},
-          { title: '人员', target: '#sec-313' }
-        ]},
-        { title: '百团时', target: '#sec-32' },
-        { title: '百团后', target: '#sec-33', children: [
-          { title: '线上', target: '#sec-331', children: [
-            { title: '水群', target: '#sec-3311' },
-            { title: '乐手组队群', target: '#sec-3312' },
-            { title: '吉他课群', target: '#sec-3313' }
-          ]},
-          { title: '线下', target: '#sec-332', children: [
-            { title: '大会', target: '#sec-3321' },
-            { title: '乐手见面会', target: '#sec-3322' },
-            { title: '吉他课试课', target: '#sec-3323' }
-          ]}
-        ]}
-      ]},
-      { title: '遗言区', icon: '📜', desc: '碎碎念', target: '#preface', children: [
-        { title: '其它注意事项', target: '#sec-5', children: [
-          { title: '天气', target: '#sec-51' },
-          { title: '商业', target: '#sec-52' }
-        ]},
-        { title: '最后', target: '#sec-6' }
-      ]},
-      { title: '参考文献', icon: '📚', desc: '推文链接 / 海报示例 / 文件模板 / 策划书', target: '#refs' }
+    var PAGES = [
+      { id: 'bands', title: '乐队档案', icon: '🎤', desc: '历届乐队介绍 / 名人堂' },
+      { id: 'gallery', title: '画廊', icon: '🖼️', desc: '活动照片集锦' },
+      { id: 'events', title: '活动', icon: '🎸', desc: '场地 / 宣传 / 内容 / 准备与现场 / 善后' },
+      { id: 'approval', title: '审批', icon: '📋', desc: '审批盖章地点 / 审批顺序' },
+      { id: 'daily', title: '日常', icon: '🏠', desc: '音箱使用 / 预约表 / 吉他课 / 换届 / 外交' },
+      { id: 'recruitment', title: '招新', icon: '🌱', desc: '百团前 / 百团时 / 百团后' },
+      { id: 'preface', title: '遗言区', icon: '📜', desc: '碎碎念' },
+      { id: 'refs', title: '参考文献', icon: '📚', desc: '推文链接 / 海报示例 / 文件模板 / 策划书' }
     ];
 
+    var currentPage = null;
+
     // ================================================================
-    // 渲染目录（Windows10 动态磁贴文件夹式）
+    // 渲染导航磁贴（点击跳转到独占页面）
     // ================================================================
     function buildMenu() {
       var root = document.getElementById('menuRoot');
       if (!root) return;
       root.innerHTML = '';
-      buildLevel(MENU, root, 0);
-    }
-
-    function buildLevel(items, parent, level) {
-      var levelEl = document.createElement('div');
-      levelEl.className = 'win-level';
 
       var grid = document.createElement('div');
-      grid.className = 'win-grid win-grid-l' + level;
+      grid.className = 'win-grid win-grid-l0';
 
-      var panels = document.createElement('div');
-      panels.className = 'win-panels';
-
-      items.forEach(function (item) {
+      PAGES.forEach(function (page) {
         var tile = document.createElement('div');
-        tile.className = 'win-tile win-l' + level + (item.children ? ' win-folder' : ' win-leaf');
+        tile.className = 'win-tile win-l0 win-leaf';
+        tile.setAttribute('data-page', page.id);
 
-        // 磁贴正面
         var face = document.createElement('div');
         face.className = 'win-tile-face';
-        if (level === 0 && item.icon) {
-          var ic = document.createElement('span');
-          ic.className = 'win-tile-icon';
-          ic.textContent = item.icon;
-          face.appendChild(ic);
-        }
+
+        var ic = document.createElement('span');
+        ic.className = 'win-tile-icon';
+        ic.textContent = page.icon;
+        face.appendChild(ic);
+
         var label = document.createElement('div');
         label.className = 'win-tile-label';
-        label.textContent = item.title;
+        label.textContent = page.title;
         face.appendChild(label);
-        if (level === 0 && item.desc) {
+
+        if (page.desc) {
           var d = document.createElement('div');
           d.className = 'win-tile-desc';
-          d.textContent = item.desc;
+          d.textContent = page.desc;
           face.appendChild(d);
         }
-        if (item.children && item.children.length) {
-          var arrow = document.createElement('span');
-          arrow.className = 'win-tile-arrow';
-          arrow.textContent = '＋';
-          face.appendChild(arrow);
-        }
+
         tile.appendChild(face);
+
+        tile.addEventListener('click', function () {
+          navigateTo(this.getAttribute('data-page'));
+        });
+
         grid.appendChild(tile);
+      });
 
-        if (item.children && item.children.length) {
-          // 下级磁贴面板：点击后在此向下弹出（不嵌在上级磁贴内）
-          var panel = document.createElement('div');
-          panel.className = 'win-panel';
-          var inner = document.createElement('div');
-          inner.className = 'win-panel-inner';
-          var crumb = document.createElement('div');
-          crumb.className = 'win-panel-crumb';
-          crumb.textContent = '▸ ' + item.title;
-          inner.appendChild(crumb);
-          buildLevel(item.children, inner, level + 1);
-          panel.appendChild(inner);
-          panels.appendChild(panel);
+      root.appendChild(grid);
+    }
 
-          // 为下级磁贴设置逐个弹出的级联延迟
-          var subs = inner.querySelectorAll('.win-tile');
-          for (var k = 0; k < subs.length; k++) {
-            subs[k].style.animationDelay = (k * 0.05) + 's';
-          }
+    // ================================================================
+    // 为板块动态添加「返回导航」按钮
+    // ================================================================
+    function ensureBackButton(section) {
+      if (section.querySelector('.page-back-bar')) return;
+      var h2 = section.querySelector('.card-content h2');
+      var pageTitle = h2 ? h2.textContent : '';
+      var bar = document.createElement('div');
+      bar.className = 'page-back-bar';
+      var btn = document.createElement('button');
+      btn.className = 'page-back-btn';
+      btn.textContent = '← 返回导航';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        showHome();
+      });
+      bar.appendChild(btn);
+      if (pageTitle) {
+        var lbl = document.createElement('span');
+        lbl.className = 'page-back-label';
+        lbl.textContent = pageTitle;
+        bar.appendChild(lbl);
+      }
+      // 插入到 card-content 之前
+      var cardContent = section.querySelector('.card-content');
+      if (cardContent) {
+        section.insertBefore(bar, cardContent);
+      } else {
+        section.insertBefore(bar, section.firstChild);
+      }
+    }
 
-          tile.addEventListener('click', function (e) {
-            if (e.target.closest('.win-tile') !== this) return;
-            toggleFolder(this, panel);
-          });
-        } else {
-          tile.addEventListener('click', function () {
-            var el = document.querySelector(item.target);
-            if (el) {
-              // 展开其所有上级折叠块，确保正文可见
-              var p = el;
+    // ================================================================
+    // 页面跳转：独占显示目标板块，隐藏其他
+    // ================================================================
+    function navigateTo(pageId, anchorId) {
+      var container = document.getElementById('pageContainer');
+      if (!container) return;
+
+      // 隐藏所有页面
+      var allPages = container.querySelectorAll('.card.block');
+      allPages.forEach(function (s) {
+        s.classList.remove('active');
+      });
+
+      // 显示目标页面
+      var page = document.getElementById(pageId);
+      if (page) {
+        ensureBackButton(page);
+        page.classList.add('active');
+        currentPage = pageId;
+
+        // 高亮当前磁贴
+        document.querySelectorAll('.win-tile[data-page]').forEach(function (t) {
+          t.classList.toggle('active-tile', t.getAttribute('data-page') === pageId);
+        });
+
+        // 滚动到页面容器
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // 锚点跳转（延迟等动画完成）
+        if (anchorId) {
+          setTimeout(function () {
+            var anchor = document.getElementById(anchorId);
+            if (anchor) {
+              var p = anchor;
               while (p && p.tagName !== 'BODY') {
                 if (p.tagName === 'DETAILS') p.open = true;
                 p = p.parentElement;
               }
-              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-          });
+          }, 420);
         }
-      });
 
-      levelEl.appendChild(grid);
-      levelEl.appendChild(panels);
-      parent.appendChild(levelEl);
-    }
+      }
 
-    // 文件夹磁贴：点击弹出下级；同层级手风琴（先收起其他，再弹出当前）
-    function toggleFolder(tile, panel) {
-      var levelEl = tile.parentElement.parentElement;
-      var willOpen = !panel.classList.contains('open');
-      var openTiles = levelEl.querySelectorAll(':scope > .win-grid > .win-folder.open');
-      for (var i = 0; i < openTiles.length; i++) openTiles[i].classList.remove('open');
-      var openPanels = levelEl.querySelectorAll(':scope > .win-panels > .win-panel.open');
-      for (var j = 0; j < openPanels.length; j++) openPanels[j].classList.remove('open');
-      if (willOpen) {
-        panel.classList.add('open');
-        tile.classList.add('open');
-        var rect = panel.getBoundingClientRect();
-        if (rect.top < 0 || rect.top > window.innerHeight * 0.8) {
-          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+      // 更新 URL hash
+      var hash = '#' + pageId;
+      if (anchorId) hash += '/' + anchorId;
+      if (history.pushState) {
+        history.pushState(null, null, hash);
       }
     }
 
-    function toggleAll(open) {
-      document.querySelectorAll('details').forEach(function (d) { d.open = open; });
-      document.querySelectorAll('.win-panel').forEach(function (p) {
-        if (open) p.classList.add('open'); else p.classList.remove('open');
+    // ================================================================
+    // 返回首页：隐藏所有页面，回到磁贴导航
+    // ================================================================
+    function showHome() {
+      var container = document.getElementById('pageContainer');
+      if (!container) return;
+
+      container.querySelectorAll('.card.block').forEach(function (s) {
+        s.classList.remove('active');
       });
-      document.querySelectorAll('.win-folder').forEach(function (t) {
-        if (open) t.classList.add('open'); else t.classList.remove('open');
+
+      document.querySelectorAll('.win-tile[data-page]').forEach(function (t) {
+        t.classList.remove('active-tile');
       });
-      if (open) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      currentPage = null;
+
+      if (history.pushState) {
+        history.pushState(null, null, '#');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ================================================================
-    // 版块索引：自动扫描页面中的 <section class="card block" id="...">
-    // 搜索可匹配到正文的句子 / 段落，并显示命中的小节与高亮片段
+    // Hash 路由处理
+    // ================================================================
+    function handleHash() {
+      var raw = location.hash.replace(/^#\/?/, '');
+      var parts = raw.split('/').filter(Boolean);
+      var pageId = parts[0] || null;
+      var anchorId = parts[1] || null;
+
+      if (pageId && PAGES.some(function (p) { return p.id === pageId; })) {
+        navigateTo(pageId, anchorId);
+      } else if (!pageId) {
+        showHome();
+      }
+    }
+
+    // ================================================================
+    // 版块索引：自动扫描 pageContainer 内的板块
     // ================================================================
     function buildBlockIndex() {
       var grid = document.getElementById('indexGrid');
       if (!grid) return;
       grid.innerHTML = '';
-      var blocks = document.querySelectorAll('main > section.card.block[id]');
+      var blocks = document.querySelectorAll('#pageContainer > .card.block[id]');
       blocks.forEach(function (sec) {
         var h2 = sec.querySelector('.card-content h2');
         var title = h2 ? h2.textContent : sec.id;
@@ -2172,7 +2203,7 @@
           card.appendChild(descEl);
         }
 
-        // 段落索引：每个小节只收录归属于自身的段落（不含嵌套小节），避免重复命中
+        // 段落索引
         var sections = [];
         sec.querySelectorAll('details[id]').forEach(function (d) {
           var sum = d.querySelector('summary');
@@ -2187,8 +2218,9 @@
         });
         card._data = { title: title, desc: desc, id: sec.id, fullText: sec.textContent, sections: sections };
 
+        // 点击索引卡片 → 跳转到对应页面
         card.addEventListener('click', function () {
-          sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          navigateTo(sec.id);
         });
         grid.appendChild(card);
       });
@@ -2198,11 +2230,10 @@
         empty.textContent = '暂无可索引的版块';
         grid.appendChild(empty);
       }
-      // 初始不显示任何卡片，仅在用户输入搜索关键词后才展示
-      grid.querySelectorAll('.index-card').forEach(function(c) { c.style.display = 'none'; });
+      grid.querySelectorAll('.index-card').forEach(function (c) { c.style.display = 'none'; });
     }
 
-    // 生成带高亮的命中片段
+    // 生成高亮片段
     function makeSnippet(text, q, idx) {
       var start = Math.max(0, idx - 16);
       var end = Math.min(text.length, idx + q.length + 24);
@@ -2211,7 +2242,9 @@
       return before + '<mark>' + text.slice(idx, idx + q.length) + '</mark>' + after;
     }
 
-    // 版块关键词搜索（匹配句子 / 段落）
+    // ================================================================
+    // 版块关键词搜索
+    // ================================================================
     var indexSearch = document.getElementById('indexSearch');
     if (indexSearch) {
       indexSearch.addEventListener('input', function () {
@@ -2223,12 +2256,10 @@
           c.style.display = 'none';
           var oldHits = c.querySelector('.index-hits');
           if (oldHits) oldHits.remove();
-          if (!q) {
-            // 无搜索内容时不展示任何卡片
-            return;
-          }
+          if (!q) return;
 
           var d = c._data;
+          if (!d) return;
           var hay = d.fullText.toLowerCase();
           var matched = hay.indexOf(q) !== -1 || d.title.toLowerCase().indexOf(q) !== -1 ||
                         d.desc.toLowerCase().indexOf(q) !== -1;
@@ -2236,7 +2267,6 @@
           c.style.display = '';
           shown++;
 
-          // 收集命中的小节
           var hits = [];
           d.sections.forEach(function (s) {
             if (s.title.toLowerCase().indexOf(q) !== -1) {
@@ -2269,22 +2299,15 @@
               }
               hit.addEventListener('click', function (ev) {
                 ev.stopPropagation();
-                var el = document.getElementById(h.s.id);
-                if (el) {
-                  var p = el;
-                  while (p && p.tagName !== 'BODY') {
-                    if (p.tagName === 'DETAILS') p.open = true;
-                    p = p.parentElement;
-                  }
-                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                // 导航到对应页面 + 锚点
+                navigateTo(d.id, h.s.id);
               });
               hitsEl.appendChild(hit);
             });
             c.appendChild(hitsEl);
           }
         });
-        if (shown === 0) {
+        if (shown === 0 && q) {
           var empty = document.createElement('p');
           empty.className = 'index-empty';
           empty.textContent = '没有匹配"' + this.value.trim() + '"的版块或段落';
@@ -2294,7 +2317,7 @@
     }
 
     // ================================================================
-    // 回到顶部跟随按钮
+    // 回到顶部按钮
     // ================================================================
     var backTop = document.getElementById('backTop');
     if (backTop) {
@@ -2307,26 +2330,59 @@
       });
     }
 
-    // 交叉引用按钮：平滑居中跳转 + 自动展开上级折叠
+    // ================================================================
+    // 交叉引用按钮（xref-btn）：跳转到对应页面+锚点
+    // ================================================================
     document.addEventListener('click', function (e) {
       var btn = e.target.closest('.xref-btn');
       if (!btn) return;
       e.preventDefault();
-      var target = document.querySelector(btn.getAttribute('href'));
-      if (target) {
-        var p = target;
-        while (p && p.tagName !== 'BODY') {
-          if (p.tagName === 'DETAILS') p.open = true;
-          p = p.parentElement;
+      var href = btn.getAttribute('href');
+      if (!href) return;
+
+      // 查找目标元素及其所在的板块
+      var target = document.querySelector(href);
+      if (!target) return;
+
+      // 展开所有上级折叠
+      var p = target;
+      while (p && p.tagName !== 'BODY') {
+        if (p.tagName === 'DETAILS') p.open = true;
+        p = p.parentElement;
+      }
+
+      // 找到目标所在的顶层板块（pageContainer 内）
+      var pageSection = target.closest('#pageContainer > .card.block[id]');
+      if (pageSection) {
+        var pageId = pageSection.id;
+        var anchorId = target.id || href.replace('#', '');
+        // 如果已在当前页面，直接滚动到锚点，无需重新渲染
+        if (pageId === currentPage) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          navigateTo(pageId, anchorId);
         }
+      } else {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     });
 
+    // ================================================================
+    // 初始化
+    // ================================================================
     document.addEventListener('DOMContentLoaded', function () {
       buildMenu();
       buildBlockIndex();
+      // 默认打开遗言区
+      if (!location.hash || location.hash === '#' || location.hash === '#/') {
+        navigateTo('preface');
+      } else {
+        handleHash();
+      }
     });
+
+    // Hash 变化时响应
+    window.addEventListener('hashchange', handleHash);
   </script>
 </body>
 </html>
