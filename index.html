@@ -2072,7 +2072,7 @@
     // ================================================================
     // 页面跳转：独占显示目标板块，隐藏其他
     // ================================================================
-    function navigateTo(pageId, anchorId) {
+    function navigateTo(pageId, anchorId, skipScroll) {
       var container = document.getElementById('pageContainer');
       if (!container) return;
 
@@ -2094,8 +2094,10 @@
           t.classList.toggle('active-tile', t.getAttribute('data-page') === pageId);
         });
 
-        // 滚动到页面容器
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // 滚动到页面容器（首次加载跳过）
+        if (!skipScroll) {
+          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
         // 锚点跳转（延迟等动画完成）
         if (anchorId) {
@@ -2401,9 +2403,13 @@
           if (!this.value.trim()) refreshSearchHint();
         });
       }
-      // 默认打开遗言区
+      // 默认打开遗言区（保持视角在页面最上方）
       if (!location.hash || location.hash === '#' || location.hash === '#/') {
-        navigateTo('preface');
+        navigateTo('preface', null, true);
+        // 强制确保停留在顶部
+        window.scrollTo(0, 0);
+        setTimeout(function () { window.scrollTo(0, 0); }, 10);
+        setTimeout(function () { window.scrollTo(0, 0); }, 100);
       } else {
         handleHash();
       }
