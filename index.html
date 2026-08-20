@@ -588,6 +588,24 @@
       padding-left: 28px;
       color: #3d53c6;
     }
+    /* 乐队条目：更大的字号 + 突出展示 */
+    details.band-entry > summary {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e293b;
+      padding: 14px 16px 14px 36px;
+      letter-spacing: 0.02em;
+      transition: color 0.15s ease;
+    }
+    details.band-entry > summary:hover {
+      color: #3d53c6;
+    }
+    details.band-entry > summary::before {
+      content: "🎵";
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 1rem;
+    }
     .subsection > summary {
       padding-left: 42px;
       color: #233a72;
@@ -666,6 +684,195 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ---------- 图片放大查看（lightbox） ---------- */
+    .img,
+    .gallery img {
+      cursor: zoom-in;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .gallery img:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(12, 16, 36, 0.25);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      padding: 48px 72px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .lightbox.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .lightbox-stage {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .lightbox-img {
+      max-width: 88vw;
+      max-height: 84vh;
+      width: auto;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      background: #141a30;
+      cursor: grab;
+      -webkit-user-drag: none;
+      touch-action: none;
+      opacity: 0;
+      transform: scale(0.94);
+      transition: transform 0.18s ease;
+    }
+    .lightbox.show .lightbox-img {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .lightbox-img.dragging {
+      cursor: grabbing;
+      transition: none;
+    }
+    .lightbox-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 22px;
+      pointer-events: none;
+    }
+    .lightbox-count {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .lightbox-close {
+      pointer-events: auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.2s, transform 0.25s, border-color 0.2s;
+    }
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.26);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: rotate(90deg) scale(1.06);
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.2s, transform 0.2s, opacity 0.25s;
+      opacity: 0;
+    }
+    .lightbox.show .lightbox-nav {
+      opacity: 1;
+    }
+    .lightbox-nav:hover {
+      background: rgba(255, 255, 255, 0.26);
+      transform: translateY(-50%) scale(1.08);
+    }
+    .lightbox-nav.prev {
+      left: 18px;
+    }
+    .lightbox-nav.next {
+      right: 18px;
+    }
+    .lightbox-nav[hidden] {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .lightbox-cap {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      max-width: 80%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 0.92rem;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lightbox-spin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      margin: -22px 0 0 -22px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      animation: lb-spin 0.8s linear infinite;
+      display: none;
+    }
+    .lightbox.loading .lightbox-spin {
+      display: block;
+    }
+    @keyframes lb-spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
     blockquote {
       margin: 10px 0;
@@ -883,11 +1090,827 @@
     <div class="page-container" id="pageContainer">
 
     <!-- 1. 乐队档案 -->
-    <section class="card block" id="bands" data-icon="🎤" data-desc="历届乐队介绍 / 名人堂">
+    <section class="card block" id="bands" data-icon="🎤" data-desc="历届乐队介绍">
       <div class="card-content">
         <h2>乐队档案</h2>
-        <p>（待补充：历届乐队介绍、名人堂等）</p>
+        <p>历届吉协乐队介绍，按成立时间排列。</p>
       </div>
+      
+      <section class="document-outline">
+
+        <div class="chapter-block" id="bands-foreword">
+          <h3>前言</h3>
+          <div class="chapter-body">
+            <!-- 在这里填写前言内容 -->
+            <p>本部分内容来自北交吉协2014年至今的公众号文章及部分访谈记录。受限于资料来源，
+              我们难以仅凭现有材料完整还原所有曾在北交活动过的乐队及其相关信息。因此，部分早期乐队乃至近年新组建的乐队，其介绍难免存在一定偏差或资料缺失。
+              若读者发现文中任何错误或不足之处，敬请联系网站维护人员或吉协内部相关人员。我们衷心感谢读者的批评与指正。</p>
+          </div>
+        </div>
+        <details class="chapter" id="bands-list">
+          <summary>历届乐队介绍</summary>
+          <div class="chapter-body">
+
+            <!-- 2026/5/14 -->
+            <!--
+            <details class="section band-entry" id="band-mama">
+              <summary>*******</summary>
+              <div class="section-body">
+                <p>来自吉协一群妈妈，结庐北交大。</p>
+                <p>麦克风：ypy、wzy、mlq、ljy、lhr</p>
+                <p>吉他：lhr、ypy</p>
+                <p>鼓：ljy、wzy</p>
+                <p>贝斯：mfy</p>
+                <p>键盘：mlq</p>
+              </div>
+            </details> -->
+
+            <details class="section band-entry" id="band-tang">
+              <summary>有糖无糖（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Tang_introduct.jpg" alt="有糖无糖 照片" title="有糖无糖">
+                <p>我们是要组一辈子乐队的好朋友啊［哭泣］［哭泣］</p>
+                <p>主唱：全糖🍬</p>
+                <p>吉他：七分糖🍬</p>
+                <p>鼓手：五分糖🍬</p>
+                <p>贝斯：三分糖🍬</p>
+                <p>键盘：无糖🍬</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-minghu">
+              <summary>明湖熏酱潜水热狗(2025-2026)</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Minghu_introduct.jpg" alt="明湖熏酱潜水热狗 照片" title="明湖熏酱潜水热狗">
+                <p>明湖熏酱潜水热狗是明湖最近施工挖出来的一根潜水的熏酱热狗，他们未来可期。</p>
+                <p>主唱：凌洛尘</p>
+                <p>吉他：xxxaix、卡拉比丘高手</p>
+                <p>鼓手：皮纳特</p>
+                <p>贝斯：纳巽</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-limgrave">
+              <summary>Limgrave（2026-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Limgrave_introduct.jpg" alt="Limgrave 照片" title="Limgrave">
+                <p>Limgrave是北交建校以来唯一一支死亡金属乐队，成员无恶不作，臭名昭著，擅长用劲爆残酷的riff摧毁一切。</p>
+                <p>吉他：野蛮低素质男孩、Quentin Stoll</p>
+                <p>键盘：广东人鲜嫩</p>
+                <p>鼓手：向姚</p>
+                <p>主唱：还没找到</p>
+                <p>贝斯：查无此人</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-btd">
+              <summary>BetterThanDeath（2026-2026）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/BTD_introduct.jpg" alt="BetterThanDeath 照片" title="BetterThanDeath">
+                <p>屙屎是什么意思？AI说是拉屎的意思。那我能屙你的手吗？AI告诉我不是这样用的，大家都说拉，拉听起来顺口，屙听起来笨……但是我想屙的还有很多，屙孤独、屙烦恼、屙秘密、屙等待...我总是一边得到一边屙掉。</p>
+                <p>Dr：hzzz</p>
+                <p>Gt：CANTIXE、夏草</p>
+                <p>Ba&amp;Cl：Azir</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-luen">
+              <summary>路恩&amp;鲸鱼旧线（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Luen_introduct.jpg" alt="路恩&amp;鲸鱼旧线 照片" title="路恩&amp;鲸鱼旧线">
+                <p>内心的希望创造出美的旋律，现实的荒原生长出疲惫的愤怒，伴随着脆弱性的嘶吼，
+                  勇敢地展示出一种不迎合而又难以捉摸的力量感，暴露出脆弱，沮丧和缺陷同时又歌唱着向上和接受对音乐边界及市场的探索，以及多年来对摇滚乐的潜心热爱，
+                  最终确立了他独有的唱腔和演奏气质：通过音乐、态度、声音，以及澄澈的情绪，发觉渴望被听到的声音：垃圾乐(grunge)朋克乐(punk)的不羁与颓废，
+                  抑或是细腻的情感和悦耳的流行乐(pop)旋律。不哗众取宠，只是喧闹地、旋律简约而极为原创地诉说着。</p>
+              </div>
+            </details>
+
+            <!-- 2026/4/14 -->
+
+            <details class="section band-entry" id="band-moto">
+              <summary>Moto（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Moto_introduct.jpg" alt="Moto 照片" title="Moto">
+                <p>这里没有穷途末路，只有纯粹的灵魂！</p>
+                <p>主唱/木吉他：房纪委</p>
+                <p>节奏吉他：唐安淇</p>
+                <p>贝斯：黄佳懿</p>
+                <p>键盘：张皓年</p>
+                <p>鼓：赵杰雄</p>
+                <p>主音吉他：邹昊田</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-evenfall">
+              <summary>Evenfall（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Even_introduct.jpg" alt="Evenfall 照片" title="Evenfall">
+                <p>失眠的刺ACG多文化半才乐队。</p>
+                <p>主唱：忧门螺杆菌</p>
+                <p>吉他：游离麻仓子asakura、LaAkue</p>
+                <p>贝斯：狄炀DDY</p>
+                <p>鼓手：后藤一里</p>
+                <p>键盘：淡水鱼</p>
+              </div>
+            </details>
+
+            <!-- 2025/11/20 -->
+
+            <details class="section band-entry" id="band-hitolead">
+              <summary>hitolead（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Hit_introduct.png" alt="hitolead 照片" title="hitolead">
+                <p>因热爱而组成的乐队！</p>
+                <p>Vol.Gt：艾特</p>
+                <p>Key：绮楼花咲</p>
+                <p>Get：摸儿卡</p>
+                <p>Ba：芜源</p>
+                <p>Dr：蓝屿</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-mifeng">
+              <summary>秘封音像（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Mifeng_introduct.png" alt="秘封音像 照片" title="秘封音像">
+                <p>欧西给欧西给欧西给欧西给欧西给欧西给欧西给欧西给。</p>
+                <p>主唱：咪啪</p>
+                <p>吉他：摸摸卡、游离</p>
+                <p>鼓手：千咲</p>
+                <p>键盘：strix nebulosa</p>
+                <p>贝斯：悲事</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-zaileyue">
+              <summary>载乐思 Zealousi（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/ZL_introduct.JPG" alt="载乐思 Zealousi 照片" title="载乐思 Zealousi">
+                <p>北郊有密林，祝君出重围。</p>
+                <p>支援主唱：严培尧</p>
+                <p>主唱/节奏吉他：刘嘉梁</p>
+                <p>主音吉他：吴航伟</p>
+                <p>鼓：李昕航</p>
+                <p>贝斯：何楚奇</p>
+                <p>小号：禹浩男</p>
+                <p>萨克斯：康子涵</p>
+                <p>键盘：李奕杉</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-summerbowl">
+              <summary>Summer Bowl（2025-2026）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/SB_introduct.JPG" alt="Summer Bowl 照片" title="Summer Bowl">
+                <p>一起瞎玩。</p>
+                <p>从夏天的结尾开始，到夏天的开始结束。</p>
+                <p>吉他/主唱：艺飞、桐乃</p>
+                <p>键盘：博哥、小熙</p>
+                <p>贝斯：小为</p>
+                <p>鼓：小轶</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-meanlake">
+              <summary>MeaN LaKe （2025-2027）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/ML_introduct.JPG" alt="MeaN LaKe 照片" title="MeaN LaKe">
+                <p>来自北京交通大学的全女子乐队，成立于25年秋。</p>
+                <p>我们把表达汇聚成湖。</p>
+                <p>吉他：林昀潼、唐安淇</p>
+                <p>贝斯：黄佳懿</p>
+                <p>键盘：夏妤萌</p>
+                <p>鼓：马岚琪</p>
+              </div>
+            </details>
+
+            <!-- 2025/5/23 -->
+
+            <details class="section band-entry" id="band-astray">
+              <summary>ASTRAY（2025-至今）</summary>
+              <div class="section-body">
+                <p>迷茫且依然前行的迷途之子们，想打破次元之间的壁垒，以JPOP和ACG音乐为主的曲风，引发对未来和青春的无限遐想，带来最闪闪发亮心跳不已的表演！</p>
+                <p>VO：黑猫</p>
+                <p>GT：游离麻仓子ASAKURA、SKILLOWER</p>
+                <p>BS：RWTEWR</p>
+                <p>KY：林C</p>
+                <p>DR：苏西</p>
+              </div>
+            </details>
+
+             <details class="section band-entry" id="band-xiexiang">
+              <summary>谐响Synthonia（2025-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/XI_introduct.png" alt="谐响Synthonia 照片" title="谐响Synthonia乐队">
+                <p>大家好我们是谐响，是一支想成为人类的乐队（原二次元ACG乐队）！请大家多多关照吧！</p>
+                <p>主唱：林姐</p>
+                <p>键盘：Miyochi</p>
+                <p>吉他：耄</p>
+                <p>贝斯：麻布</p>
+                <p>鼓手：千咲</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-amblelight">
+              <summary>AMBLELIGHT（2024-2025）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/AM_introduct.png" alt="AMBLELIGHT 照片" title="AMBLELIGHT">
+                <p>大家好我们是Amblelight。Amblelight的意思是漫光，寓意是漫步趋向黎明。乐队的宗旨是让每个成员都享受乐队，开开心心组乐队！</p>
+                <p>主唱：5302</p>
+                <p>吉他：鸽子一定行、rain</p>
+                <p>鼓手：蓝屿</p>
+                <p>键盘：乌林鸮</p>
+                <p>贝斯：麻布</p>
+              </div>
+            </details>
+
+            <!-- 2025/4/9 -->
+
+            <details class="section band-entry" id="band-maibo">
+              <summary>脉搏（2024-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/MB_introduct.JPG" alt="脉搏 照片" title="脉搏乐队">
+                <p>主唱：秋刀鱼</p>
+                <p>吉他：Ko-Olu、师政</p>
+                <p>键盘：zozo</p>
+                <p>贝斯：麻布</p>
+                <p>鼓：千咲</p>
+                <p>小提琴：3C老师</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-xinglianjie">
+              <summary>星联结（2024-至今）</summary>
+              <div class="section-body">
+                <p>群星连结的众人，梦境穿梭的曲目，打破次元之间的壁垒，以jpop和acg音乐为主的曲风，带来对未来和青春的无限遐想。</p>
+                <p>队长/Guitar1：欣羊</p>
+                <p>Guitar2：asakura</p>
+                <p>Keyboard/Vocal：黑猫</p>
+                <p>Drum：李洵</p>
+                <p>Bass：阿松</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-zhigengniao">
+              <summary>知更鸟（2024至今）</summary>
+              <div class="section-body">
+                <p>成立于2024年秋季。乐队风格多样，目前主要演奏朋克、摇滚等曲风，未来还计划探索流行、ACG等多元领域。当前乐队致力于更好地翻唱各位成员喜爱的乐曲，原创曲目正在筹划中，敬请期待。</p>
+                <p>吉他：read、kuhhhhh</p>
+                <p>贝斯：妙蛙不是种子</p>
+                <p>鼓：夢的光點</p>
+                <p>主唱：还是会想你</p>
+                <p>键盘：椎名真白</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-flyowl">
+              <summary>FLY OWL（2024-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/FLY_introduct.JPG" alt="FLY OWL 照片" title="FLY OWL">
+                <p>乐队成员深受XJAPAN、Dream Theater、The Beatles、Metallica等大牌经典乐队影响，致力于对摇滚、硬摇滚、流行朋克、金属等风格的研究，如同乐队的名字飞枭一样，给予听众在听觉上的冲击。HERE WE ARE TO MAKE THINGS HAPPEN.</p>
+                <p>鼓手：wzy</p>
+                <p>主唱/节奏吉他：lxy</p>
+                <p>贝斯：zzf</p>
+                <p>主音吉他：lhr</p>
+                <p>键盘：lys</p>
+              </div>
+            </details>
+
+            <!-- 2024/11/7 -->
+
+            <details class="section band-entry" id="band-fangkong">
+              <summary>放空faire le vide（2024-2025）</summary>
+              <div class="section-body">
+                <p>主唱：王子淇</p>
+                <p>贝斯：何倩</p>
+                <p>吉他：吴青涵</p>
+                <p>鼓手：杜怡霖</p>
+                <p>键盘：冯智</p>
+              <img class="img" src="assets/images/FK_introduct.JPG" alt="放空faire le vide 照片" title="放空faire le vide乐队">
+                <p>原阵容:</p>
+                <p>主唱：阮国金</p>
+                <p>吉他：王子淇 张盛</p>
+                <p>贝斯：郭思妤</p>
+                <p>键盘：冯智</p>
+                <p>鼓手：杜怡霖</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-tuihua">
+              <summary>退化立场（2023-2025）</summary>
+              <div class="section-body">
+                <p>退化立场是一支组建于2023春季的独立乐队，他们是生活在温吞的新时代的四个青年，缺失伟大的志向和深刻的思想，他们的音乐里只有看似坚定的立场，和伪装平和的语气。</p>
+                <p>Vocal：凌政</p>
+                <p>Guitar：吴正元</p>
+                <p>Bass：陈思秋池</p>
+                <p>Drum：杨一宁</p>
+              </div>
+            </details>
+
+            <!-- 2024/10/10 -->
+
+            <details class="section band-entry" id="band-unknown">
+              <summary>unknown（2023-2025）</summary>
+              <div class="section-body">
+                <p>成立于2023年冬。</p>
+                <p>吉他：马粲懿、魏一平、刘明辉</p>
+                <p>鼓：何宇韬</p>
+                <p>主唱：小孜、仙琵力</p>
+              </div>
+            </details>
+
+            <!-- 2024/4/27 -->
+
+            <details class="section band-entry" id="band-shanyuan">
+              <summary>山园祈祷（2023-2026）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/SH_introduct.JPG" alt="山园祈祷 照片" title="山园祈祷乐队">
+                <p>我不再关心月亏月盈，你被海浪激起的麦田靠近。"山骨刻进失真轰鸣的断层，园墟之上悬着未锈的钟。</p>
+                <p>风格：独立摇滚。</p>
+                <p>主唱：晨晨 Niyoah</p>
+                <p>吉他：莱克伍德、枫夜</p>
+                <p>贝斯：Viz</p>
+                <p>键盘：广东人鲜嫩</p>
+                <p>鼓手：Miracle-mile</p>
+                <p>管乐：Jarvis</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-freetown">
+              <summary>Freetown（2023-2025）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Fr_introduct.JPG" alt="Freetown 照片" title="Freetown乐队">
+                <p>风格：Punk</p>
+                <p>主唱：Bernard</p>
+                <p>吉他：汪润泽、吴青涵</p>
+                <p>贝斯：DejA-Vu</p>
+                <p>鼓：李锦昊</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-sanyu">
+              <summary>三鱼（单人活动）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/SAN_introduct.png" alt="三鱼 照片" title="三鱼">
+                <p>邓世博，机电学院硕士，学习指弹两年半。指弹是一种比较新的吉他演奏形式，它将各种技巧融合，通过纯乐器演奏的方式表现出来。</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-liyu">
+              <summary>离域（2023-2025）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/LY_introduct.JPG" alt="离域 照片" title="离域乐队">
+                <p>音乐风格主要是流行、民谣以及轻摇滚。离域致力于将流行与民谣的元素融合，在未来发展出更好的音乐。</p>
+                <p>主唱：陶柏安</p>
+                <p>吉他：王子略、张舵</p>
+                <p>键盘：王凯雯</p>
+                <p>鼓：齐云宁</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-idvds">
+              <summary>iDVDs（2023-2024）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/ID_introduct.JPG" alt="iDVDs 照片" title="iDVDs乐队">
+                <p>Individuals！不同的人向往不同的天空，但和而不同的我们也会有共同的旋律。尝试融入，拒绝同化。</p>
+                <p>主唱：荣哥</p>
+                <p>主音吉他：刘哥</p>
+                <p>节奏吉他：乐乐</p>
+                <p>木吉他：小朱</p>
+                <p>贝斯：小为</p>
+                <p>键盘：小熙</p>
+                <p>鼓：小天</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-liudian">
+              <summary>六点将近（2023-2026）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/LD_introduct.JPG" alt="六点将近 照片" title="六点将近">
+                <p>风格：R&amp;B, citypop, funk等。融合现代与复古，跟随六点将近寻找内心的律动。</p>
+                <p>主唱：六天</p>
+                <p>吉他：点点 &amp; 夏草</p>
+                <p>贝斯：小姜</p>
+                <p>鼓：叶子</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-bluerose">
+              <summary>BLUE ROSE-湛蓝玫瑰（2023-2026）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/bluerose1.jpg" alt="BLUE ROSE-湛蓝玫瑰" title="BLUE ROSE-湛蓝玫瑰" >
+                <span class="img-caption">BLUE ROSE-湛蓝玫瑰</span>
+                <img class="img" src="assets/images/bluerose2.jpg" alt="BLUE ROSE-湛蓝玫瑰 原阵容" title="BLUE ROSE-湛蓝玫瑰 原阵容" >
+                <span class="img-caption">BLUE ROSE-湛蓝玫瑰 原阵容</span>
+                <p>本队四个吉他手（现加上个鼓手）轮流当主唱和去弹贝斯。</p>
+                <p>成员：毛、白、昊天、翼咴、小尧LJY</p>
+                <p>前成员：夏目、小姜</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-yiyuan">
+              <summary>肇事医院（Trouble Hospital）（2023-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/YY_introduct.JPG" alt="肇事医院 照片" title="肇事医院">
+                <p>乐队于23年中旬北京成立，将乐队名与"肇事""医院""自医""问题""麻烦"等词胡乱联系在一起，或许是与我们都有某些神秘联系在。摆脱恐惧是我向您，所要索取的自由！</p>
+                <p>主唱/吉他：云</p>
+                <p>吉他：阿俣</p>
+                <p>贝斯：力诚</p>
+                <p>鼓手：吴振勇</p>
+              </div>
+            </details>
+
+            <!-- 2022/9/29 -->
+
+            <details class="section band-entry" id="band-xuanhu">
+              <summary>Xuanhu 悬壶（2021-2024）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Xuanhu_introduct.png" alt="Xuanhu 悬壶 照片" title="Xuanhu 悬壶乐队">
+                <p>悬壶乐队成立于2021年10月，是一支新鲜、有趣、有活力的乐队。风格多变，主要以日摇和流行摇滚为主，希望在今后的音乐旅程中，能有更多碰撞与灵感。</p>
+                <p>主唱/节奏吉他：子豪</p>
+                <p>键盘：张帆</p>
+                <p>主音吉他：子悦</p>
+                <p>贝斯：小雨</p>
+                <p>鼓手：小卫</p>
+                <p>主音吉他：牛哥</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-brownie">
+              <summary>半熟布朗尼</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/BN_introduct.JPG" alt="半熟布朗尼 照片" title="半熟布朗尼乐队">
+                <p>"半熟布朗尼"是一支由二年级同学组成的六人乐队，包括主唱、主音吉他、节奏吉他、鼓、贝斯、键盘各一名。作为以日摇风格为基调的乐队，主要练习ヨルシカ（夜鹿乐队）以及其他日摇乐队的作品。</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-rooftop">
+              <summary>Rooftop garden（2021-至今）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/RO_introduct.JPG" alt="Rooftop garden 照片" title="Rooftop garden乐队">
+                <p>乐队名字来源于Beatles 1969年天台（Rooftop）那一次最后公开表演以及鼓手Ringo所创作的章鱼花园（garden）。一支英伦摇滚乐队，很Old school，深受Beatles、Queen等一众老牌摇滚乐队影响，乐队成员因为吉协因为音乐聚到一起。</p>
+                <p>主唱兼主音吉他：牛振宇</p>
+                <p>贝斯：王子悦</p>
+                <p>节奏吉他：郑子豪</p>
+                <p>鼓手：罗泽霖</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-maomao">
+              <summary>幸运猫猫波（Lucky Katswave）（2022-2023）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/MA_introduct.JPG" alt="幸运猫猫波 照片" title="幸运猫猫波乐队">
+                <p>R&amp;B/Funk/Neosoul/Citypop…律动之魂在燃烧，风格不定但希望做自己和别人喜欢的音乐。</p>
+                <p>Guitar：夏草 &amp; 点点</p>
+                <p>Bass：小姜</p>
+                <p>Drum：泽泽</p>
+                <p>Key：阿尾</p>
+              </div>
+            </details>
+
+            <!-- 2021/6/11 -->
+
+            <details class="section band-entry" id="band-shendu">
+              <summary>深度不学习（2021-2025）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/SD_introduct.JPG" alt="深度不学习 照片" title="深度不学习乐队">
+                <p>深度不学习乐队，成立于2021年5月1日，风格流行摇滚。乐队虽成立仅一个多月，已有4首原创歌曲，参加过交大青团二十周年演出。</p>
+                <p>主唱兼节奏吉他：杰哥</p>
+                <p>主音吉他：典哥</p>
+                <p>贝斯：旋哥</p>
+                <p>鼓手：泽哥</p>
+                <p>键盘：薏仰妹妹</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-leiyi">
+              <summary>雷伊（2020-2021）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/404.JPG" alt="404" title="雷伊乐队">
+                <p>主唱：不愿透露姓名の小宁</p>
+                <p>主音吉他：一直在考六级の典哥</p>
+                <p>节奏吉他：二次元脆骨の翰子哥</p>
+                <p>贝斯：每天都很忙の杰哥</p>
+                <p>鼓手：只有帅气の小泽泽</p>
+                <p>键盘：又美又温柔のYY</p>
+              </div>
+            </details>
+
+            <!-- 2021/5/27 -->
+
+            <details class="section band-entry" id="band-revolution">
+              <summary>Revolution Letterbomb（2021年-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Revolution_introduct.JPG" alt="Revolution Letterbomb 照片" title="Revolution Letterbomb乐队">
+                <p>Revolution Letterbomb乐队，成立于2021年4月，风格为punk、grunge、rock。</p>
+                <p>Guitarist &amp; Backing Vocalist：Syd</p>
+                <p>Vocalist &amp; Guitarist：姬泽南</p>
+                <p>Bassist：李卓阳</p>
+                <p>Drummer：季嘉豪</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-ep">
+              <summary>E.P.（2021-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/EP_introduct.JPG" alt="E.P. 照片" title="E.P.乐队">
+                <p>我看见巨大的符号升起，凝视着我，目送我到达死亡。尝试通过声音退行到风里，回归到失去秩序的地方。</p>
+                <p>Vocal：廖骜杰</p>
+                <p>Drum：李洵</p>
+                <p>Bass：伍旋</p>
+                <p>Guitar：王皓、敲</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-inf">
+              <summary>Inf.（2019-至今）</summary>
+              <div class="section-body">
+                <p>成立于2019年初。荒谬的观察者，与周身无意义的情绪，与无知的种子，与无限无稽的往复。</p>
+                <p>全称：Infinite Nonsense Fear</p>
+                <p>代表作<a href="https://www.bilibili.com/video/BV1m5EEzhEvg/?spm_id_from=333.337.search-card.all.click&vd_source=4b415d7c9dc07170abf2c8fb5cc5774a">Summer Never Ends</a>、
+                  <a href="https://www.bilibili.com/video/BV1TjEEzFEyu/?spm_id_from=333.337.search-card.all.click&vd_source=4b415d7c9dc07170abf2c8fb5cc5774a">Time</a></p>
+                <p>Guitar：嘉琦 / 正元</p>
+                <p>Bass：大熊</p>
+              </div>
+            </details>
+
+            <!-- 2021/5/7 -->
+
+            <details class="section band-entry" id="band-siminuo">
+              <summary>斯米诺（2020-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/siminuo_introduct.JPG" alt="斯米诺 照片" title="斯米诺乐队">
+                <p>主唱：廖、敲</p>
+                <p>吉他：敲、皓</p>
+                <p>贝斯：琦</p>
+                <p>鼓：奇</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-qiqi">
+              <summary>是奇奇不是琪琪也不是齐齐（后更名为flur）（2020-2022）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/qiqi_introduct.JPG" alt="是奇奇不是琪琪也不是齐齐 照片" title="是奇奇不是琪琪也不是齐齐乐队/flur乐队">
+                <p>2021年团聚今夜演出现场<a href="https://www.bilibili.com/video/BV1C64y1C7Lm/?spm_id_from=333.337.search-card.all.click&vd_source=4b415d7c9dc07170abf2c8fb5cc5774a">相遇天使</a></p>
+                <p>主唱：雨桑</p>
+                <p>吉他：敲酱、浩酱</p>
+                <p>贝斯：琦酱</p>
+                <p>键盘：琳桑</p>
+                <p>鼓：奇酱</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-ironwill">
+              <summary>IronWill（2020-2023）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/IW_introduct.JPG" alt="IronWill 照片" title="IronWill乐队">
+                <p>IronWill（铁志）乐队，起于机缘巧合，在不同风格间反复横跳，渴望溺死在音乐，生而永不复生。</p>
+                <p>主唱：邓力浩</p>
+                <p>吉他：毛俊彦</p>
+                <p>贝斯：王子琦</p>
+                <p>键盘：白浩志</p>
+                <p>鼓：许亮</p>
+              </div>
+            </details>
+
+            <!-- 2019/6/23 -->
+
+            <details class="section band-entry" id="band-beimang">
+              <summary>北邙之中（2018-未知）</summary>
+              <div class="section-body">
+                <p>又是"百忙之中"的谐音，思靳、V9、Lucy都在为自己的学业和事业奔忙，在百忙之中，回望京城，那些混沌、莫名左冲右突的情绪与滋味都织入音乐当中。</p>
+                <p>成员：思靳、V9、Lucy</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-huangcao">
+              <summary>荒草公园（2018-未知）</summary>
+              <div class="section-body">
+                <p>废弃的游乐园荒草丛生，生锈的旋转木马摩天轮，代表着对消费娱乐时代的反思。</p>
+                <p>成员：新阳、李靖、思靳</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-nanji">
+              <summary>南极碱（2018-未知）</summary>
+              <div class="section-body">
+                <p>吉他：lyf 陈柏霖</p>
+                <p>鼓：lzq</p>
+                <p>贝斯：zjy</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-mafang">
+              <summary>马放南山（2018-未知）</summary>
+              <div class="section-body">
+                <p>主唱：刘承启</p>
+                <p>主音吉他：程麒</p>
+                <p>节奏吉他：侯俊</p>
+                <p>贝斯：刘少言</p>
+                <p>鼓：韩一玮</p>
+              </div>
+            </details>
+
+            <!-- 2018/4/3 -->
+
+            <details class="section band-entry" id="band-faketaxi">
+              <summary>Fake Taxi乐队（2017-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/FT_introduct.JPG" alt="Fake Taxi 照片" title="Fake Taxi乐队">
+                <p>One night with Fake Taxi! Free ride and big party! 年轻的极右分子，极度狭隘的音乐口味，硬摇老炮型好学生乐队。</p>
+                <p>主唱：肖颖</p>
+                <p>主音吉他：赵墨旸</p>
+                <p>节奏吉他：金明威</p>
+                <p>贝斯：钟志豪</p>
+                <p>鼓：Roman（法国）</p>
+                <p>键盘：陈子飞</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-yi">
+              <summary>1乐队（2017-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/yi_introduct.JPG" alt="1乐队 照片" title="1乐队">
+                <p>想成为单纯随意直接的blues与garage rock乐队，现在翻弹一些上个世纪的经典，由北京交通大学的三名工科学生组成。跟着我们，希望能带给你漂亮的跳跃、能哼出声的亲切感，演奏出律动里的情绪。</p>
+                <p>贝斯/口琴/主唱：金博涵</p>
+                <p>吉他：孙仁杰</p>
+                <p>鼓：彭红蕾</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-ningmeng">
+              <summary>柠檬塑料乐队（2017-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/ningmeng_introduct.JPG" alt="柠檬塑料乐队 照片" title="柠檬塑料乐队">
+                <p>没有风格、啥都玩的菜逼鸽子乐队柠檬塑料。</p>
+                <p>主音吉他：李一帆</p>
+                <p>节奏吉他：孙正扬</p>
+                <p>贝斯：张婧怡</p>
+                <p>主唱：陈诗睿</p>
+                <p>鼓：谢天</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-sanche">
+              <summary>伏特加三轮车乐队（2017-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/sanche_introduct.JPG" alt="伏特加三轮车乐队 照片" title="伏特加三轮车乐队">
+                <p>金属的心态，民谣的技术，玩朋克致敬一位学长。主唱是全校头发最长的男子，贝斯手曾是全校头发第二长的男子，鼓手喜欢偶像练习生。</p>
+                <p>主唱：何方溥</p>
+                <p>贝斯：杨子江</p>
+                <p>吉他：朱振月</p>
+                <p>鼓手：王筱肖</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-hongzhuan">
+              <summary>红砖乐队（2016-2019）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/hongzhuan_introduct.JPG" alt="红砖乐队 照片" title="红砖乐队">
+                <p>成立于2016年，喝酒聚餐次数大约是排练次数两倍，撸猫次数大约是喝酒聚餐次数四倍。</p>
+                <p>主唱：林宜萱</p>
+                <p>吉他：冯森、陈鑫</p>
+                <p>贝斯：杨子江</p>
+                <p>鼓手：韩一玮</p>
+              </div>
+            </details>
+
+            <!-- 2017/3/15 -->
+
+            <details class="section band-entry" id="band-hierarchy">
+              <summary>等级制度（Hierarchy）（2016年）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/Hierarchy_introduct.JPG" alt="等级制度 照片" title="等级制度">
+                <p>Iron Maiden的铮铮铁蹄经由岁月的洗礼，越过世纪的鸿沟，化成血液流淌在Hierarchy身上。军魂与战火，心灵求索与悲悯，囚徒与自由，英勇与悲壮……荡气回肠的音乐给每一双耳朵无私倾注着力量。我们将会死守在历史最经典的舞台，捍卫我们热血沸腾的重金属。</p>
+                <p>主唱：肖颖</p>
+                <p>吉他：周子焱 / 朱兵钺</p>
+                <p>贝斯：韩笑</p>
+                <p>鼓手：赵世远</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-yin">
+              <summary>Yin乐队（2016-未知）</summary>
+              <div class="section-body">
+                <p>Yin乐队，生于交大。风格诡异莫测，上可金属爆炸甩头，下可流行装逼土嗨。生活已经如此多娇，所以我们必须风骚。</p>
+                <p>主唱：肖悦成</p>
+                <p>吉他：赵子鉴</p>
+                <p>贝斯：孙基诚</p>
+                <p>鼓手：黄方琦</p>
+              </div>
+            </details>
+
+            <!-- 2016/5/4 -->
+
+            <details class="section band-entry" id="band-beike">
+              <summary>贝壳（2015-2019）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_beike.jpg" alt="贝壳乐队照片" title="贝壳乐队">
+                <p>2015年的秋天，坐标北京交通大学。破旧的地下室，指尖的音符，嘶吼的嗓音，每一次击打跳起的火花，击穿沉闷的空气，与灰尘共舞。理工科与艺术的机缘——贝壳的诞生。他们无心定义风格，亦摒弃标签，只愿追逐着音乐的尾巴，把这如酒般的大学生活，一饮而尽。</p>
+                <p>主唱：张万鹏</p>
+                <p>主音吉他：张丹阳</p>
+                <p>节奏吉他：郑澳</p>
+                <p>贝斯：刘昱希</p>
+                <p>鼓手：赵建哲</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-maogoushou">
+              <summary>猫狗兽（2015-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_maogoushou.jpg" alt="猫狗兽乐队照片" title="猫狗兽乐队">
+                <p>纯爱朋克，唯美校园风。假如生活是肮脏的，那么你就是肮脏的。假如生活是美好的，那么你就是美好的。少矫情，多微笑，少玩手机，多听纯爱朋克，爱我你就拍拍手，爱我你就点点头！</p>
+                <p>主唱：祝轩宇</p>
+                <p>吉他手：于健</p>
+                <p>贝斯手：洞哥</p>
+                <p>鼓手：郭欣桐</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-steal">
+              <summary>STEAL（2016-2018）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_steal.jpg" alt="STEAL乐队照片">
+                <p>STEAL，原铁子弹乐队，以7080年代的布鲁斯硬摇滚与华丽金属音乐风格为基石，糅合当代大学生的小情绪与复古情怀，做有故事与没故事的音乐。在洛城噪声中寻找力量，在垮掉一代中寻找思考，带着无底的问题，在繁华都市继续着上世纪的梦。</p>
+                <p>主唱：肖颖（铁蛋）</p>
+                <p>吉他：朱振月</p>
+                <p>贝斯：刘昱希</p>
+                <p>鼓手：席晓强</p>
+              </div>
+            </details>
+
+            <!-- 2015/5/21 -->
+
+            <details class="section band-entry" id="band-tiezidan">
+              <summary>铁子弹（2015-2016）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_tiezidan.jpg" alt="铁子弹乐队照片" title="铁子弹乐队">
+                <p>铁子弹（Iron Bullet）乐队，成立于2015年4月底，由北交吉他协会大一和大二学生成员组建。乐队由四个热爱布鲁斯硬摇以及金属乐的年轻人组成，正逐渐努力成为一支温柔的硬摇乐队。一颗射穿物欲横流纸醉金迷的世界，在心头绚丽绽放的子弹。</p>
+                <p>主唱/吉他：肖颖</p>
+                <p>贝斯：门映雪</p>
+                <p>吉他：沙茜</p>
+                <p>鼓：詹浩文康</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-baipishu">
+              <summary>白皮书（2014-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_baipishu.jpg" alt="白皮书乐队照片" title="白皮书乐队">
+                <p>白皮书乐队，成立于2014年，由北京交通大学和北京林业大学的在校生组建。白皮书，一国政府或议会正式发表的重要文件，其看法和观点具有一定的代表性和权威性，但通常无法律作用。以此为名，是一种自讽，也是一种希冀。乐队后朋克的风格为校园音乐带来独特的气息。</p>
+                <p>主唱/吉他：刘家辉</p>
+                <p>吉他：胡方权</p>
+                <p>BASS：蒋若涵</p>
+                <p>鼓手/采样工程：包玉树</p>
+                <p>和声/其他乐器：邓钰</p>
+              </div>
+            </details>
+
+            <!-- 2014/9/17 -->
+
+            <details class="section band-entry" id="band-liehun">
+              <summary>裂魂（2013-未知）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_liehun.jpg" alt="裂魂乐队照片" title="裂魂乐队">
+                <p>魂本无形，裂而见隙。五片来自九州各处的灵魂熔于一体，不为所限，用内心对世间的感悟擦出灵感火花，演绎这五片裂魂独有的金属之声。裂魂乐队，一支充满力量充满特点的金属乐队。</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-yaowu">
+              <summary>药坞（2013-2017）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_yaowu.jpg" alt="药坞乐队照片" title="药坞乐队">
+                <p>药坞乐队成立于2013年11月，中国特色社会主义风格，音乐中不乏硬摇、BLUES、民族等元素。欲往药坞求灵药，求得灵药治俗尘。乐队认为作品是一种表达方式，其吐诉和讲述，乃至影响的功能是他们所看重的。</p>
+                <p>主唱/吉他：肖寒</p>
+                <p>吉他：周云坤</p>
+                <p>贝斯：马毅辉</p>
+                <p>鼓手：杨松霖</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-masker">
+              <summary>Masker</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_masker.jpg" alt="Masker乐队照片" title="Masker乐队">
+                <p>Masker乐队，由学校各个学院不同年级的学生组成，为听众带来硬摇滚的独特魅力。</p>
+              </div>
+            </details>
+
+            <details class="section band-entry" id="band-chenmi">
+              <summary>沉迷（2011-2015）</summary>
+              <div class="section-body">
+                <img class="img" src="assets/images/band_chenmi.jpg" alt="沉迷乐队照片" title="沉迷乐队">
+                <p>沉迷乐队，一支原创能力很强的乐队，始创于2011年，2013年2月正式确定阵容。风格包含Hardrock、Blues、Grunge等，注重歌曲的旋律性和编配。2013年迷笛校园乐队大赛全国冠军，并包揽最佳吉他手和最佳主唱荣誉。</p>
+                <p>主唱/吉他：杨仲旺</p>
+                <p>吉他/和声：李轶炜</p>
+                <p>贝斯：周怡萍</p>
+                <p>鼓：赵东晓</p>
+              </div>
+            </details>
+
+          </div>
+        </details>
+      </section>
     </section>
 
     <!-- 2. 画廊 -->
@@ -1533,6 +2556,7 @@
               <p>吉协的社团性质决定了我们需要供乐队成员练习和排练的空间，也就是活动室。我们的活动室已由嘉园地下室A28-40转变为学活505，从专属活动室转变为和学校其它社团的共用活动室。</p>
               <p>吉协坚持为每一个热爱音乐的成员提供便利，奈何时间和空间都是有限的，所以排练室施行每周一开放小程序统一预约，供各队负责人查看和预约合适且空闲的时间。</p>
               <!-- <p> <a href="https://example.com">小程序预约</a>二维码：<br><img src="assets/linked%20Document/学活505预约表.png" alt="学活505预约表" width="200"></p> -->
+              <p>小程序使用：每位成员都需要在小程序上注册账号，之后注册队伍，由队长拉人完成队伍的注册。在管理员审核通过后，即可在预约界面查看并预约排练室空闲时间。我们强烈建议每支队伍将已经排好的歌曲同步在小程序上，方便演出的规划。</p>
               <p>在此，我们也提供之前一直使用的预约表表格，作为历史的见证与备份。</p>
               <figure class="example">
                 <figcaption>示例</figcaption>
@@ -1789,6 +2813,7 @@
         <p>运营社团可以很简单，也可以很困难。笔者当然是希望吉协可以一直认真组织，所以在对于具体事项进行阅读之前，希望未来的负责人可以读一读这篇文章：</p>
         <blockquote><a href="https://mp.weixin.qq.com/s/rVkjaG-xIJH-Ww6v0u2zQw" target="_blank">《高校兴趣社团：兴趣之外，还有什么？》</a></blockquote>
         <p>其实27年左右学生逐渐搬往雄安校区后，吉协能以何种形式存在都不得而知，这些事情也和笔者关系不大了。但是整个运营流程的基本思路和中心思想应该不会有太大改变。如果之后的负责人能在此基础上不断更新和完善，笔者认为，这些整理总结工作终究不会是白费力气。对于其它兄弟姐妹社团，在日常管理和举办活动的共通之处也能有一些帮助。</p>
+
       </div>
       <section class="document-outline">
 
@@ -1796,8 +2821,8 @@
       <div class="chapter-block" id="sec-6">
         <h3>感谢</h3>
         <div class="chapter-body">
-          <p>本网站主要内容的原文由马岚琪编写，全文中的笔者均指代作者马岚琪。2026年8月，在受到一些相关的启发后，北交吉协便尝试开发预约报表功能的小程序和这个介绍和展示社团的网站。
-          本网站选择以马岚琪的文章为基础，进行结构的重构和内容上的调整和补充，是因为她的文章比较系统的阐述了吉协活动和管理的基本流程，有比较高的学习价值。
+          <p>本网站主要内容的原文由马岚琪编写，全文中的笔者均指代作者马岚琪。2026年8月，在受到一些相关的启发后，北交吉协便尝试开发预约报表功能的小程序和这个介绍并展示社团的网站。
+          本网站选择以马岚琪的文章为基础，进行结构的重构和内容上的调整和补充，是因为她的文章比较系统的阐述了吉协活动和管理的基本流程，有比较高的参考价值。
           当然在网站筹划时，一些工作流程或者重要信息已经发生了一定改变，因此网站上的内容已经进行了一些调整，删除了一些过时或敏感的内容，补充了最新的信息。</p>
           <p>直接或间接协助笔者参与了此文档（原文）编写工作的：</p>
           <ul>
@@ -1808,8 +2833,9 @@
           </ul>
           <p>参与了网站上新增内容设计的：</p>
           <ul>
-            <li>夏妤萌（<a href="#sec-42" class="xref-btn">预约表</a>处的预约表</a> 、部分的网站JS代码设计）； </li>
+            <li>夏妤萌（<a href="#sec-42" class="xref-btn">预约表</a>处的预约小程序、部分的网站JS代码设计）； </li>
             <li>吴航伟（网站的制作与维护）</li>
+            <li>马岚琪（全部章节主要内容的整理）</li>
           </ul>
           <p>今当远离，不知所言。</p>
         </div>
@@ -1818,7 +2844,19 @@
       </section>
     </section>
 
-    <!-- 9. 参考文献 -->
+    <!-- 9. 通讯录 -->
+    <section class="card block" id="contacts" data-icon="📇" data-desc="联系方式">
+      <div class="card-content">
+        <h2>通讯录</h2>
+        <p>吉协相关人员联系方式：</p>
+            <p>&emsp;&emsp;马岚琪&emsp;&emsp;电话：15390441010； 微信：A15390441010</p>
+            <p>&emsp;&emsp;夏妤萌&emsp;&emsp;除了fps，可以在蒸汽找到我：1142890410</p>
+            <p>&emsp;&emsp;喜欢stereolab的人请和我成为朋友！电话：18815537102 微信：lyf18815537102</p>
+            <p>&emsp;&emsp;网站维护人员：吴航伟&emsp;&emsp;微信：wxid_1wgcxkbxozvc22</p>
+          </div>
+    </section>
+
+    <!-- 10. 参考文献 -->
     <section class="card block" id="refs" data-icon="📚" data-desc="推文链接 / 海报示例 / 文件模板 / 策划书">
       <div class="card-content">
         <h2>参考文献</h2>
@@ -1977,13 +3015,14 @@
     // 页面数据：顶层板块定义（用于磁贴导航生成）
     // ================================================================
     var PAGES = [
-      { id: 'bands', title: '乐队档案', icon: '🎤', desc: '历届乐队介绍 / 名人堂' },
+      { id: 'bands', title: '乐队档案', icon: '🎤', desc: '历届乐队介绍' },
       { id: 'gallery', title: '画廊', icon: '🖼️', desc: '活动照片集锦' },
       { id: 'events', title: '活动', icon: '🎸', desc: '场地 / 宣传 / 内容 / 准备与现场 / 善后' },
       { id: 'approval', title: '审批', icon: '📋', desc: '审批盖章地点 / 审批顺序' },
       { id: 'daily', title: '日常', icon: '🏠', desc: '音箱使用 / 预约表 / 吉他课 / 换届 / 外交' },
       { id: 'recruitment', title: '招新', icon: '🌱', desc: '百团前 / 百团时 / 百团后' },
       { id: 'preface', title: '遗言区', icon: '📜', desc: '碎碎念' },
+      { id: 'contacts', title: '通讯录', icon: '📇', desc: '联系方式' },
       { id: 'refs', title: '参考文献', icon: '📚', desc: '推文链接 / 海报示例 / 文件模板 / 策划书' }
     ];
 
@@ -2417,6 +3456,175 @@
 
     // Hash 变化时响应
     window.addEventListener('hashchange', handleHash);
+
+    // ================================================================
+    // 图片点击放大查看（lightbox）
+    // ================================================================
+    (function initLightbox() {
+      var lb = document.createElement('div');
+      lb.className = 'lightbox';
+      lb.innerHTML =
+        '<div class="lightbox-spin"></div>' +
+        '<button class="lightbox-nav prev" type="button" aria-label="上一张">&#8249;</button>' +
+        '<div class="lightbox-stage">' +
+        '  <img class="lightbox-img" src="" alt="">' +
+        '</div>' +
+        '<button class="lightbox-nav next" type="button" aria-label="下一张">&#8250;</button>' +
+        '<div class="lightbox-top">' +
+        '  <span class="lightbox-count"></span>' +
+        '  <button class="lightbox-close" type="button" aria-label="关闭">&times;</button>' +
+        '</div>' +
+        '<div class="lightbox-cap"></div>';
+      document.body.appendChild(lb);
+
+      var img = lb.querySelector('.lightbox-img');
+      var cap = lb.querySelector('.lightbox-cap');
+      var count = lb.querySelector('.lightbox-count');
+      var closeBtn = lb.querySelector('.lightbox-close');
+      var prevBtn = lb.querySelector('.lightbox-nav.prev');
+      var nextBtn = lb.querySelector('.lightbox-nav.next');
+
+      var group = [];      // 当前组（同组图片）
+      var index = 0;       // 当前序号
+      var scale = 1, tx = 0, ty = 0;  // 缩放与平移
+
+      function resetView() {
+        scale = 1; tx = 0; ty = 0;
+        img.style.transform = '';
+      }
+      function applyView() {
+        img.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale + ')';
+      }
+      function render() {
+        var el = group[index];
+        if (!el) return;
+        resetView();
+        lb.classList.add('loading');
+        var src = el.getAttribute('data-full') || el.src;
+        img.onload = function () { lb.classList.remove('loading'); };
+        img.src = src;
+        img.alt = el.getAttribute('alt') || '';
+        cap.textContent = el.getAttribute('title') || el.getAttribute('alt') || '';
+        count.textContent = group.length > 1 ? (index + 1) + ' / ' + group.length : '';
+        prevBtn.hidden = group.length < 2;
+        nextBtn.hidden = group.length < 2;
+      }
+      function open(el) {
+        // 收集当前"章节"（最近的带 id 的容器）内的所有照片，可循环切换
+        var scope = el.closest(
+          'details[id], .chapter-block[id], .section-block[id], .subsection-block[id], .sub4-block[id]'
+        );
+        group = scope
+          ? Array.prototype.slice.call(scope.querySelectorAll('img.img, .gallery img'))
+          : [el];
+        if (!group.length) group = [el];
+        index = group.indexOf(el);
+        if (index < 0) index = 0;
+        render();
+        lb.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        lb.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      function step(d) {
+        if (group.length < 2) return;
+        index = (index + d + group.length) % group.length;  // 循环切换
+        render();
+      }
+
+      // 打开：点击正文图片 / 画廊缩略图
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('.img, .gallery img');
+        if (!el || lb.classList.contains('show')) return;
+        open(el);
+      });
+
+      // 关闭：点背景 / 关闭按钮 / Esc
+      lb.addEventListener('click', function (e) {
+        if (e.target === lb || e.target === lb.querySelector('.lightbox-stage')) close();
+      });
+      closeBtn.addEventListener('click', close);
+      prevBtn.addEventListener('click', function () { step(-1); });
+      nextBtn.addEventListener('click', function () { step(1); });
+      document.addEventListener('keydown', function (e) {
+        if (!lb.classList.contains('show')) return;
+        if (e.key === 'Escape') close();
+        else if (e.key === 'ArrowLeft') step(-1);
+        else if (e.key === 'ArrowRight') step(1);
+      });
+
+      // 缩放：以鼠标/触摸点为中心，保证指针所指内容位置不变
+      function zoomAt(px, py, factor) {
+        var rect = lb.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;   // 视口中心
+        var cy = rect.top + rect.height / 2;
+        var mx = px - cx;                      // 指针相对中心
+        var my = py - cy;
+        var ns = Math.min(5, Math.max(1, scale * factor));
+        if (ns === scale) return;
+        // 保持指针下的图像点不动：t' = m - s'·(m - t)/s
+        tx = mx - ns * (mx - tx) / scale;
+        ty = my - ns * (my - ty) / scale;
+        scale = ns;
+        clampView();
+        applyView();
+      }
+
+      // 平移边界：图片至少覆盖整个视口，可查看每一部分但不会拖丢
+      function clampView() {
+        var vw = lb.clientWidth;
+        var vh = lb.clientHeight;
+        var w = img.clientWidth * scale;
+        var h = img.clientHeight * scale;
+        var maxX = Math.max(0, (w - vw) / 2);
+        var maxY = Math.max(0, (h - vh) / 2);
+        tx = Math.max(-maxX, Math.min(maxX, tx));
+        ty = Math.max(-maxY, Math.min(maxY, ty));
+      }
+
+      // 滚轮缩放（鼠标指针为中心）
+      lb.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+      }, { passive: false });
+
+      // 拖拽平移（鼠标 / 触摸统一，使用 Pointer Events）
+      var dragging = false, sx = 0, sy = 0, sTx = 0, sTy = 0;
+      img.addEventListener('pointerdown', function (e) {
+        if (scale <= 1) return;   // 未放大时允许点击关闭，不触发拖拽
+        dragging = true;
+        sx = e.clientX;
+        sy = e.clientY;
+        sTx = tx;
+        sTy = ty;
+        img.classList.add('dragging');
+        img.setPointerCapture(e.pointerId);
+      });
+      img.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        tx = sTx + (e.clientX - sx);
+        ty = sTy + (e.clientY - sy);
+        clampView();
+        applyView();
+      });
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        img.classList.remove('dragging');
+        if (e && e.pointerId != null) {
+          try { img.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+      img.addEventListener('pointerup', endDrag);
+      img.addEventListener('pointercancel', endDrag);
+      // 双击还原
+      img.addEventListener('dblclick', function (e) {
+        e.preventDefault();
+        resetView();
+      });
+    })();
   </script>
 </body>
 </html>
